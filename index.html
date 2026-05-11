@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Monocular Multi-Agent Gaussian Splatting SLAM for Geometrically and Photometrically Consistent Reconstruction">
+    <meta name="keywords" content="Multi-agent Visual SLAM, 3D Gaussian Splatting, Dense Reconstruction">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MAGS-SLAM: Monocular Multi-Agent Gaussian Splatting SLAM</title>
+
+    <link rel="icon" type="image/x-icon" href="./static/images/icon.png">
+
+    <meta property="og:image" content="./static/images/icon.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MAGS-SLAM: Monocular Multi-Agent Gaussian Splatting SLAM">
+    <meta name="twitter:image" content="./static/images/icon.png">
+    <meta name="twitter:description"
+        content="Monocular Multi-Agent Gaussian Splatting SLAM for Geometrically and Photometrically Consistent Reconstruction">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,600|Noto+Sans:400,600|Castoro:400,600"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/modern-normalize@3.0.1/modern-normalize.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/tabler-icons-outline.min.css"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.4/dist/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <style>
+        .center-image {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .item {
+            margin: 10px;
+        }
+
+        .blend-img-background {
+            mix-blend-mode: multiply;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        nav {
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            width: 100%;
+            gap: 10px;
+        }
+
+        nav ul li {
+            flex: 1;
+            display: flex;
+            margin: 0;
+        }
+
+        nav ul li a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            color: #363636;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-height: 50px;
+            flex-grow: 1;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+
+        nav ul li a:hover {
+            background-color: #e4e4e4;
+            transform: scale(1.05);
+        }
+
+        nav ul li a:active {
+            background-color: #d3d3d3;
+            transform: scale(0.95);
+        }
+
+        nav ul li a.active {
+            background-color: #cccccc;
+            color: #000000;
+        }
+
+
+        .dynamic-section {
+            display: block;
+        }
+
+        .panel-style {
+            background-color: #fafafa;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px auto 10px;
+            max-width: 100%;
+        }
+
+        .video-container {
+            position: relative;
+            width: 95%;
+            margin: 0 auto;
+        }
+
+        .video-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            align-items: center;
+        }
+
+        .video-label {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .content-text {
+            max-width: 90%;
+            margin: 0 auto;
+            text-align: justify;
+        }
+
+        .math-formula {
+            max-width: 90%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #carousel-results {
+            visibility: hidden;
+        }
+
+        @media screen and (max-width: 768px) {
+            .thumbnail {
+                width: 80px !important;
+            }
+        }
+
+        .columns .column.is-approx-95 {
+            flex: 0 0 95%;
+            max-width: 95%;
+        }
+    </style>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            "HTML-CSS": {
+                availableFonts: ["TeX"],
+                preferredFont: "TeX",
+                webFont: "TeX"
+            },
+            messageStyle: "none"
+        });
+    </script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+    <section class="hero" style="margin-bottom: 0; padding-bottom: 0;">
+        <div class="hero-body" style="padding-bottom: 1rem;">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered" style="margin-bottom: 0">
+                    <div class="column is-max-desktop has-text-centered">
+                        <h1 class="title is-2 publication-title" style="margin-bottom:0rem; max-width: 95%; margin-left: auto; margin-right: auto;">
+                            <strong>MAGS-SLAM: Monocular Multi-Agent Gaussian Splatting SLAM for Geometrically and Photometrically Consistent Reconstruction</strong>
+                        </h1>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-four-fifths has-text-centered">
+                        <br>
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block">
+                                Anonymous Authors
+                            </span>
+                        </div>
+
+                        <br>
+                        <div class="columns is-centered" style="margin-bottom: 0em">
+                            <div class="column is-max-desktop has-text-centered">
+                                <h1 class="title is-4 publication-title" style="margin-bottom:0rem">
+                                    <strong>Paper under double-blind review.</strong>
+                                </h1>
+                            </div>
+                        </div>
+
+                        <div class="column has-text-centered" style="margin-top: 0.75rem;">
+                            <div class="publication-links">
+                                <span class="link-block">
+                                    <span class="button is-normal is-rounded is-dark" style="cursor: default;">
+                                        <span class="icon">
+                                            <i class="fab fa-github"></i>
+                                        </span>
+                                        <span>Code &amp; Data (Released upon Acceptance)</span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="hero teaser">
+        <div class="container fluid">
+            <div class="hero-body is-max-widescreen">
+                <div class="columns is-centered">
+                    <div class="column is-centered is-four-fifths">
+                        <div class="notification is-centered is-info is-rounded"
+                            style="text-align: center; padding-bottom: 5px; padding-top: 5px; background-color: #33728E; border-radius: 10px;">
+                            <h6 class="title is-2 publication-title" style="margin-top:0.2rem; margin-bottom:0.2rem; text-align: center; color:#ffffff; font-size: 17px; margin-left: auto; margin-right: auto;">
+                                TL;DR: The first RGB-only multi-agent 3D Gaussian Splatting SLAM for collaborative photorealistic scene reconstruction.
+                            </h6>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <div style="width: 100%; aspect-ratio: 1920 / 1076; overflow: hidden; line-height: 0;">
+                    <video id="teaser" preload="auto" autoplay muted loop playsinline
+                        style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <source src="./static/video/teaser.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <br>
+            </div>
+        </div>
+    </section>
+
+
+
+    <section class="section has-background-light">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Abstract</h2>
+                    <div class="content has-text-justified">
+                        <p>
+                            Collaborative photorealistic 3D reconstruction from multiple agents enables rapid large-scale scene capture for virtual production and cooperative multi-robot exploration. While recent 3D Gaussian Splatting (3DGS) SLAM algorithms can generate high-fidelity real-time mapping, most existing multi-agent Gaussian SLAM methods still rely on RGB-D sensors to obtain metric depth and simplify cross-agent alignment, which limits deployment on lightweight, low-cost, or power-constrained robotic platforms.
+                        </p>
+                        <p>
+                            To address this challenge, we propose <strong>MAGS-SLAM</strong>, the first RGB-only multi-agent 3DGS SLAM framework for collaborative scene reconstruction. Each agent independently builds local monocular Gaussian submaps and transmits compact submap summaries rather than raw observations or dense maps. To facilitate robust collaboration in the presence of monocular scale ambiguity, our framework integrates compact submap communication, geometry- and appearance-aware loop verification, and occupancy-aware Gaussian fusion, enabling coherent global reconstruction without active depth sensors.
+                        </p>
+                        <p>
+                            We further introduce the <strong>ReplicaMultiAgent Plus</strong> benchmark for evaluating collaborative Gaussian SLAM. Extensive experiments on synthetic and real-world datasets show that MAGS-SLAM achieves competitive tracking accuracy and comparable or superior rendering quality to state-of-the-art RGB-D collaborative Gaussian SLAM methods while relying only on RGB images.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section" style="padding-top: 2rem;">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Reconstruction Results</h2>
+                    <p style="max-width: 100%; margin: 0 auto; margin-bottom: 0px; text-align: center;">
+                        Photorealistic multi-agent reconstructions on ReplicaMultiAgent and ReplicaMultiAgent Plus datasets. Click any thumbnail below to play the corresponding result.
+                    </p>
+                </div>
+        </div>
+
+        <script defer src="./static/js/pts-vis.js"></script>
+        <section id="pts-vis" class="section dynamic-section" style="padding-top: 0rem;">
+        </section>
+    </section>
+
+
+    <section class="section" style="padding-top: 2rem;">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Interactive Mesh &amp; Trajectories</h2>
+                    <p style="max-width: 100%; margin: 0 auto; margin-bottom: 0px; text-align: center;">
+                        Globally fused TSDF mesh together with the per-agent camera trajectories (colored polylines) on synthetic (ReplicaMultiAgent, ReplicaMultiAgent Plus) and real-world (ETH3D, Tanks and Temples) datasets. Drag inside the viewer to rotate, right-drag to pan, and scroll to zoom. Click a thumbnail to switch scenes.
+                    </p>
+                </div>
+        </div>
+
+        <section id="mesh-vis" class="section dynamic-section" style="padding-top: 0rem; display: none;">
+        </section>
+        <script type="module" src="./static/js/mesh-vis.js"></script>
+    </section>
+
+    <section class="section" style="padding-top: 2rem;">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Why Multi-Agent Gaussian SLAM?</h2>
+                    <p style="max-width: 100%; margin: 0 auto; margin-bottom: 0px; text-align: center;">
+                        A single agent can only reconstruct the portion of the scene it has actually visited. On the real-world 7-Scenes <strong>Fire</strong> sequence, each individual agent (1-4) covers a partial region of the room, while collaborative fusion across agents produces a complete and globally consistent reconstruction. Click a thumbnail to swap meshes, where you can directly compare per-agent coverage against the multi-agent fusion under the same viewpoint.
+                    </p>
+                </div>
+        </div>
+
+        <section id="multi-vis" class="section dynamic-section" style="padding-top: 0rem; display: none;">
+        </section>
+        <script type="module" src="./static/js/multi-vis.js"></script>
+    </section>
+
+    <section class="section" style="padding-top: 2rem;">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">ReplicaMultiAgent Plus Dataset</h2>
+                    <p style="max-width: 100%; margin: 0 auto; margin-bottom: 0px; text-align: center;">
+                        We introduce <strong>ReplicaMultiAgent Plus</strong>, a multi-agent benchmark for collaborative Gaussian SLAM with diverse indoor scenes captured by multiple agents traversing overlapping regions. Beyond monocular (RGB-only) or RGB-D streams and ground-truth poses for each agent, we additionally release per-frame instance/semantic labels, which we hope will benefit research on <strong>multi-agent semantic SLAM, open-vocabulary 3D scene understanding, and collaborative multi-agent perception</strong>. Click any thumbnail to play the corresponding sequence.
+                    </p>
+                </div>
+        </div>
+
+        <script defer src="./static/js/dataset-vis.js"></script>
+        <section id="dataset-vis" class="section dynamic-section" style="padding-top: 0rem;">
+        </section>
+    </section>
+
+    <footer class="footer" style="background-color: transparent; padding-top: 2rem; padding-bottom: 2rem;">
+        <div align="center" class="container">
+            <div class="columns is-centered">
+                <div class="content">
+                    Thank you for your attention. Design borrowed from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    Element.prototype.contains = function(text) {
+        return this.textContent.includes(text);
+    };
+    </script>
+</body>
+
+</html>
