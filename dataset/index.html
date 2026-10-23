@@ -1,628 +1,292 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="ReplicaMultiAgent Plus: a multi-agent RGB-D-semantic benchmark for collaborative SLAM, released with MAGS-SLAM (IEEE T-ASE 2026).">
-    <meta name="keywords" content="Multi-agent SLAM, Collaborative SLAM, Gaussian Splatting, Dataset, Benchmark, Replica, Semantic SLAM">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ReplicaMultiAgent Plus Dataset | MAGS-SLAM</title>
+    <meta name="description" content="ReplicaMultiAgent Plus: a multi-agent RGB-D-semantic benchmark for collaborative SLAM, released with MAGS-SLAM (IEEE T-ASE 2026).">
+    <meta name="keywords" content="Multi-agent SLAM, Collaborative SLAM, Gaussian Splatting, Dataset, Benchmark, Replica, Semantic SLAM">
 
-    <link rel="icon" type="image/x-icon" href="../static/images/icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ReplicaMultiAgent Plus Dataset">
+    <meta property="og:description" content="A multi-agent RGB-D-semantic benchmark for collaborative SLAM, released with MAGS-SLAM.">
+    <meta property="og:url" content="https://mags-slam.github.io/dataset/">
+    <meta property="og:image" content="https://mags-slam.github.io/static/images/og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://mags-slam.github.io/static/images/og.jpg">
 
-    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,600|Noto+Sans:400,600|Castoro:400,600"
-        rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-    <link rel="stylesheet" href="../static/css/index.css">
-    <style>
-        .section-intro {
-            max-width: 100%;
-            margin: 0 auto 1.5rem;
-            text-align: center;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
-
-        .stat {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.9rem 0.5rem;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: #33728E;
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .scene-card {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .scene-head {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 0.25rem 1rem;
-            margin-bottom: 0.9rem;
-        }
-
-        .scene-name {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: #363636;
-        }
-
-        .scene-meta {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        .scene-body {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .scene-mesh img {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            background: #fff;
-        }
-
-        .agent-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.5rem;
-        }
-
-        .agent-grid.is-two {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .agent-col {
-            margin: 0;
-        }
-
-        .tile {
-            position: relative;
-            margin-bottom: 0.4rem;
-        }
-
-        .tile img {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: 6px;
-        }
-
-        .tile .tag-tl,
-        .tile .tag-br {
-            position: absolute;
-            font-size: 0.75rem;
-            line-height: 1;
-            color: #fff;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.85);
-        }
-
-        .tile .tag-tl {
-            top: 6px;
-            left: 7px;
-        }
-
-        .tile .tag-br {
-            right: 7px;
-            bottom: 6px;
-        }
-
-        .agent-col figcaption {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .scene-pair {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1.5rem;
-        }
-
-        .scene-pair .scene-card {
-            margin-bottom: 0;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            background: #fff;
-        }
-
-        .data-table th:not([align]),
-        .data-table td {
-            border: 1px solid #dbdbdb;
-            padding: 0.5rem 0.5rem;
-            text-align: left;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .data-table th {
-            background: #f5f5f5;
-            font-weight: 600;
-            white-space: normal;
-            line-height: 1.25;
-        }
-
-        .data-table td.wrap {
-            white-space: normal;
-        }
-
-        .data-table tr.group-row td {
-            background: #fafafa;
-            font-weight: 600;
-            text-align: left;
-            color: #555;
-        }
-
-        .table-note {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 0.6rem;
-        }
-
-        pre {
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
-        @media screen and (max-width: 768px) {
-            .scene-body {
-                grid-template-columns: 1fr;
-            }
-
-            .scene-mesh {
-                max-width: 260px;
-                margin: 0 auto;
-            }
-
-            .agent-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .scene-pair {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/site.css?v=10">
 </head>
 
 <body>
-    <section class="hero">
-        <div class="hero-body" style="padding-bottom: 1rem;">
-            <div class="container is-max-desktop">
-                <div class="columns is-centered">
-                    <div class="column has-text-centered">
-                        <h1 class="title is-1 publication-title" style="margin-bottom: 1rem;">
-                            <strong>ReplicaMultiAgent Plus</strong>
-                        </h1>
-                        <h2 class="title is-4 publication-title" style="font-weight: 400;">
-                            A Multi-Agent RGB-D-Semantic Benchmark for Collaborative SLAM
-                        </h2>
-                        <div class="is-size-5 publication-authors">
-                            <span class="author-block">Released with <a href="../">MAGS-SLAM</a></span>
-                        </div>
-                        <div class="is-size-5 publication-authors" style="margin-top: 0.5rem;">
-                            <span class="author-block"><b>IEEE Transactions on Automation Science and Engineering (T-ASE), 2026</b></span>
-                        </div>
-
-                        <div class="publication-links" style="margin-top: 1.5rem;">
-                            <span class="link-block">
-                                <a href="../" class="external-link button is-normal is-rounded is-dark">
-                                    <span class="icon"><i class="fas fa-home"></i></span>
-                                    <span>Project Page</span>
-                                </a>
-                            </span>
-                            <span class="link-block">
-                                <a href="https://arxiv.org/pdf/2605.10760" target="_blank" rel="noopener noreferrer"
-                                    class="external-link button is-normal is-rounded is-dark">
-                                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                                    <span>Paper</span>
-                                </a>
-                            </span>
-                            <span class="link-block">
-                                <a href="https://arxiv.org/abs/2605.10760" target="_blank" rel="noopener noreferrer"
-                                    class="external-link button is-normal is-rounded is-dark">
-                                    <span class="icon"><i class="ai ai-arxiv"></i></span>
-                                    <span>arXiv</span>
-                                </a>
-                            </span>
-                            <span class="link-block">
-                                <a href="https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QMdeMrWvv" target="_blank" rel="noopener noreferrer"
-                                    class="external-link button is-normal is-rounded is-dark">
-                                    <span class="icon"><i class="fab fa-google-drive"></i></span>
-                                    <span>Download</span>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-grid">
-                    <div class="stat"><div class="stat-value">6</div><div class="stat-label">Replica scenes</div></div>
-                    <div class="stat"><div class="stat-value">20</div><div class="stat-label">agent sequences</div></div>
-                    <div class="stat"><div class="stat-value">28,208</div><div class="stat-label">RGB-D-semantic frames</div></div>
-                    <div class="stat"><div class="stat-value">353.6 m</div><div class="stat-label">of trajectories</div></div>
-                    <div class="stat"><div class="stat-value">640&times;480</div><div class="stat-label">at 30 Hz</div></div>
-                    <div class="stat"><div class="stat-value">&asymp; 9.2 GB</div><div class="stat-label">in total</div></div>
-                </div>
-            </div>
+    <header class="nav">
+        <div class="nav-inner">
+            <a class="nav-brand" href="../">MAGS-SLAM</a>
+            <nav class="nav-links" aria-label="Sections">
+                <a href="#overview">Overview</a>
+                <a href="#scenes">Scenes</a>
+                <a href="#download">Download</a>
+                <a href="#format">Data Format</a>
+                <a href="#citation">Citation</a>
+            </nav>
+            <a class="btn btn-arxiv btn-sm" href="https://arxiv.org/pdf/2605.10760" target="_blank" rel="noopener">Paper</a>
         </div>
-    </section>
+    </header>
 
+    <main id="top">
+        <section class="hero wrap">
+            <h1 class="title"><span class="title-name">ReplicaMultiAgent Plus</span></h1>
+            <p class="subtitle">A Multi-Agent RGB-D-Semantic Benchmark for Collaborative SLAM</p>
+            <p class="venue">Released with <a href="../">MAGS-SLAM</a>, IEEE Transactions on Automation Science and Engineering (T-ASE), 2026</p>
 
-    <section class="section has-background-light">
-        <div class="container is-max-desktop">
-            <div class="columns is-centered">
-                <div class="column is-four-fifths">
-                    <h2 class="title is-3 has-text-centered">Overview</h2>
-                    <div class="content has-text-justified">
-                        <p>
-                            Existing multi-agent SLAM benchmarks force a trade-off between photometric realism, agent count, and ground-truth completeness. Real-world sets provide authentic sensor noise but no dense mesh ground truth and no semantic supervision, while synthetic sets built on Replica cap the team at two agents.
-                        </p>
-                        <p>
-                            <strong>ReplicaMultiAgent Plus</strong> re-renders Replica scenes through Habitat-Sim with up to <strong>four human-teleoperated agents per scene</strong>. Each trajectory is driven by an operator at 30&nbsp;Hz with a game controller, mixing long forward sweeps, look-arounds, brief stops, and revisits, while following a per-scene overlap budget. The benchmark simultaneously provides:
-                        </p>
-                        <ul>
-                            <li><strong>Larger robot teams</strong> with long trajectories: four agents per benchmark scene, up to 3,049 frames and 39.2&nbsp;m per agent.</li>
-                            <li><strong>Controlled inter-agent overlap</strong>, ranging from largely disjoint to heavily co-visible multi-agent splits.</li>
-                            <li><strong>Dense ground truth</strong>: metric depth, camera poses of all agents in one shared world frame, and a dense mesh per scene.</li>
-                            <li><strong>Semantics</strong>: per-pixel Replica semantic labels for every frame.</li>
-                        </ul>
-                        <p>
-                            It supports the evaluation of <strong>monocular, RGB-D, and semantic multi-agent SLAM</strong> for collaborative dense reconstruction.
-                        </p>
-                    </div>
-                </div>
+            <div class="links">
+                <a class="btn btn-data" href="https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QMdeMrWvv" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>
+                    Download</a>
+                <a class="btn btn-outline" href="../">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6.5 10v9.5h11V10"/></svg>
+                    Project page</a>
+                <a class="btn btn-ieee" href="https://doi.org/10.1109/TASE.2026.3746179" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+                    IEEE Xplore</a>
+                <a class="btn btn-arxiv" href="https://arxiv.org/abs/2605.10760" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l14 16M19 4L5 20"/></svg>
+                    arXiv</a>
             </div>
-        </div>
-    </section>
 
+            <dl class="stats">
+                <div><dt>6</dt><dd>Replica scenes</dd></div>
+                <div><dt>20</dt><dd>agent sequences</dd></div>
+                <div><dt>28,208</dt><dd>RGB-D-semantic frames</dd></div>
+                <div><dt>353.6 m</dt><dd>of trajectories</dd></div>
+                <div><dt>640&times;480</dt><dd>at 30 Hz</dd></div>
+                <div><dt>&asymp; 9.2 GB</dt><dd>in total</dd></div>
+            </dl>
+        </section>
 
-    <section class="section">
-        <div class="container is-max-desktop">
-            <h2 class="title is-3 has-text-centered">Scenes</h2>
-            <p class="section-intro">
-                Left: ground-truth mesh with the human-teleoperated agent trajectories overlaid, one color per agent.
-                Right: sample observations of each agent. Each tile is split diagonally: the top tile shows <b>RGB</b> / <b>depth</b>, the bottom tile shows <b>semantic</b> / <b>RGB</b>.
-            </p>
+        <section class="block wrap" id="overview">
+            <h2>Overview</h2>
+            <div class="prose">
+                <p>Existing multi-agent SLAM benchmarks force a trade-off between photometric realism, agent count, and ground-truth completeness. Real-world sets provide authentic sensor noise but no dense mesh ground truth and no semantic supervision, while synthetic sets built on Replica cap the team at two agents.</p>
+                <p><strong>ReplicaMultiAgent Plus</strong> re-renders Replica scenes through Habitat-Sim with up to <strong>four human-teleoperated agents per scene</strong>. Each trajectory is driven by an operator at 30&nbsp;Hz with a game controller, mixing long forward sweeps, look-arounds, brief stops, and revisits, while following a per-scene overlap budget. The benchmark simultaneously provides:</p>
+                <ul class="features">
+                    <li><strong>Larger robot teams</strong> with long trajectories: four agents per benchmark scene, up to 3,049 frames and 39.2&nbsp;m per agent.</li>
+                    <li><strong>Controlled inter-agent overlap</strong>, ranging from largely disjoint to heavily co-visible multi-agent splits.</li>
+                    <li><strong>Dense ground truth</strong>: metric depth, camera poses of all agents in one shared world frame, and a dense mesh per scene.</li>
+                    <li><strong>Semantics</strong>: per-pixel Replica semantic labels for every frame.</li>
+                </ul>
+                <p>It supports the evaluation of <strong>monocular, RGB-D, and semantic multi-agent SLAM</strong> for collaborative dense reconstruction.</p>
+            </div>
+        </section>
 
-            <div class="scene-card">
-                <div class="scene-head">
-                    <span class="scene-name">Apartment-0</span>
-                    <span class="scene-meta">4 agents &middot; 7,792 frames &middot; 101.6 m</span>
-                </div>
+        <section class="block wrap" id="scenes">
+            <h2>Scenes</h2>
+            <p class="intro">Left: ground-truth mesh with the human-teleoperated agent trajectories overlaid, one colour per agent. Right: sample observations of each agent. Each tile is split diagonally: the upper tile shows <strong>RGB</strong> and <strong>depth</strong>, the lower tile shows <strong>semantics</strong> and <strong>RGB</strong>.</p>
+
+            <article class="scene">
+                <header class="scene-head"><h3>Apartment-0</h3><span>4 agents, 7,792 frames, 101.6 m</span></header>
                 <div class="scene-body">
-                    <div class="scene-mesh"><img src="../static/dataset/apart0_mesh.jpg" alt="Apartment-0 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy"></div>
-                    <div class="agent-grid">
-                        <figure class="agent-col">
-                            <div class="tile"><img src="../static/dataset/apart0_agent1_rgbd.jpg" alt="Apartment-0, agent 1: RGB and depth" width="480" height="360" loading="lazy"><span class="tag-tl">RGB</span><span class="tag-br">Depth</span></div>
-                            <div class="tile"><img src="../static/dataset/apart0_agent1_sem.jpg" alt="Apartment-0, agent 1: semantic and RGB" width="480" height="360" loading="lazy"><span class="tag-tl">Semantic</span><span class="tag-br">RGB</span></div>
+                    <img class="scene-mesh" src="../static/dataset/apart0_mesh.jpg" alt="Apartment-0 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy">
+                    <div class="agents">
+                        <figure>
+                            <div class="tile"><img src="../static/dataset/apart0_agent1_rgbd.jpg" alt="Apartment-0, agent 1: RGB and depth" width="480" height="360" loading="lazy"><span class="tag tl">RGB</span><span class="tag br">Depth</span></div>
+                            <div class="tile"><img src="../static/dataset/apart0_agent1_sem.jpg" alt="Apartment-0, agent 1: semantic and RGB" width="480" height="360" loading="lazy"><span class="tag tl">Semantic</span><span class="tag br">RGB</span></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart0_agent2_rgbd.jpg" alt="Apartment-0, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart0_agent2_sem.jpg" alt="Apartment-0, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart0_agent3_rgbd.jpg" alt="Apartment-0, agent 3: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart0_agent3_sem.jpg" alt="Apartment-0, agent 3: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 3</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart0_agent4_rgbd.jpg" alt="Apartment-0, agent 4: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart0_agent4_sem.jpg" alt="Apartment-0, agent 4: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 4</figcaption>
                         </figure>
                     </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="scene-card">
-                <div class="scene-head">
-                    <span class="scene-name">Apartment-2</span>
-                    <span class="scene-meta">4 agents &middot; 9,516 frames &middot; 119.9 m</span>
-                </div>
+            <article class="scene">
+                <header class="scene-head"><h3>Apartment-2</h3><span>4 agents, 9,516 frames, 119.9 m</span></header>
                 <div class="scene-body">
-                    <div class="scene-mesh"><img src="../static/dataset/apart2_mesh.jpg" alt="Apartment-2 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy"></div>
-                    <div class="agent-grid">
-                        <figure class="agent-col">
+                    <img class="scene-mesh" src="../static/dataset/apart2_mesh.jpg" alt="Apartment-2 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy">
+                    <div class="agents">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart2_agent1_rgbd.jpg" alt="Apartment-2, agent 1: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart2_agent1_sem.jpg" alt="Apartment-2, agent 1: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart2_agent2_rgbd.jpg" alt="Apartment-2, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart2_agent2_sem.jpg" alt="Apartment-2, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart2_agent3_rgbd.jpg" alt="Apartment-2, agent 3: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart2_agent3_sem.jpg" alt="Apartment-2, agent 3: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 3</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart2_agent4_rgbd.jpg" alt="Apartment-2, agent 4: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart2_agent4_sem.jpg" alt="Apartment-2, agent 4: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 4</figcaption>
                         </figure>
                     </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="scene-card">
-                <div class="scene-head">
-                    <span class="scene-name">Hotel-0</span>
-                    <span class="scene-meta">4 agents &middot; 4,122 frames &middot; 49.8 m</span>
-                </div>
+            <article class="scene">
+                <header class="scene-head"><h3>Hotel-0</h3><span>4 agents, 4,122 frames, 49.8 m</span></header>
                 <div class="scene-body">
-                    <div class="scene-mesh"><img src="../static/dataset/hotel0_mesh.jpg" alt="Hotel-0 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy"></div>
-                    <div class="agent-grid">
-                        <figure class="agent-col">
+                    <img class="scene-mesh" src="../static/dataset/hotel0_mesh.jpg" alt="Hotel-0 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy">
+                    <div class="agents">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/hotel0_agent1_rgbd.jpg" alt="Hotel-0, agent 1: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/hotel0_agent1_sem.jpg" alt="Hotel-0, agent 1: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/hotel0_agent2_rgbd.jpg" alt="Hotel-0, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/hotel0_agent2_sem.jpg" alt="Hotel-0, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/hotel0_agent3_rgbd.jpg" alt="Hotel-0, agent 3: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/hotel0_agent3_sem.jpg" alt="Hotel-0, agent 3: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 3</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/hotel0_agent4_rgbd.jpg" alt="Hotel-0, agent 4: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/hotel0_agent4_sem.jpg" alt="Hotel-0, agent 4: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 4</figcaption>
                         </figure>
                     </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="scene-card">
-                <div class="scene-head">
-                    <span class="scene-name">Office-2</span>
-                    <span class="scene-meta">4 agents &middot; 4,325 frames &middot; 54.1 m</span>
-                </div>
+            <article class="scene">
+                <header class="scene-head"><h3>Office-2</h3><span>4 agents, 4,325 frames, 54.1 m</span></header>
                 <div class="scene-body">
-                    <div class="scene-mesh"><img src="../static/dataset/office2_mesh.jpg" alt="Office-2 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy"></div>
-                    <div class="agent-grid">
-                        <figure class="agent-col">
+                    <img class="scene-mesh" src="../static/dataset/office2_mesh.jpg" alt="Office-2 ground-truth mesh with four agent trajectories" width="693" height="748" loading="lazy">
+                    <div class="agents">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/office2_agent1_rgbd.jpg" alt="Office-2, agent 1: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/office2_agent1_sem.jpg" alt="Office-2, agent 1: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/office2_agent2_rgbd.jpg" alt="Office-2, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/office2_agent2_sem.jpg" alt="Office-2, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/office2_agent3_rgbd.jpg" alt="Office-2, agent 3: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/office2_agent3_sem.jpg" alt="Office-2, agent 3: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 3</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/office2_agent4_rgbd.jpg" alt="Office-2, agent 4: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/office2_agent4_sem.jpg" alt="Office-2, agent 4: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 4</figcaption>
                         </figure>
                     </div>
                 </div>
-            </div>
+            </article>
 
-            <h3 class="title is-5 has-text-centered" style="margin-top: 2.5rem;">Additional Two-Agent Sequences</h3>
+            <h3 class="subhead">Additional Two-Agent Sequences</h3>
             <div class="scene-pair">
-                <div class="scene-card">
-                    <div class="scene-head">
-                        <span class="scene-name">Room-0</span>
-                        <span class="scene-meta">2 agents &middot; 1,838 frames &middot; 20.8 m</span>
-                    </div>
-                    <div class="agent-grid is-two">
-                        <figure class="agent-col">
+                <article class="scene">
+                    <header class="scene-head"><h3>Room-0</h3><span>2 agents, 1,838 frames, 20.8 m</span></header>
+                    <div class="agents is-two">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/room0_agent1_rgbd.jpg" alt="Room-0, agent 1: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/room0_agent1_sem.jpg" alt="Room-0, agent 1: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/room0_agent2_rgbd.jpg" alt="Room-0, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/room0_agent2_sem.jpg" alt="Room-0, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
                     </div>
-                </div>
-                <div class="scene-card">
-                    <div class="scene-head">
-                        <span class="scene-name">Apartment-1</span>
-                        <span class="scene-meta">2 agents &middot; 615 frames &middot; 7.4 m</span>
-                    </div>
-                    <div class="agent-grid is-two">
-                        <figure class="agent-col">
+                </article>
+                <article class="scene">
+                    <header class="scene-head"><h3>Apartment-1</h3><span>2 agents, 615 frames, 7.4 m</span></header>
+                    <div class="agents is-two">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart1_agent1_rgbd.jpg" alt="Apartment-1, agent 1: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart1_agent1_sem.jpg" alt="Apartment-1, agent 1: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 1</figcaption>
                         </figure>
-                        <figure class="agent-col">
+                        <figure>
                             <div class="tile"><img src="../static/dataset/apart1_agent2_rgbd.jpg" alt="Apartment-1, agent 2: RGB and depth" width="480" height="360" loading="lazy"></div>
                             <div class="tile"><img src="../static/dataset/apart1_agent2_sem.jpg" alt="Apartment-1, agent 2: semantic and RGB" width="480" height="360" loading="lazy"></div>
                             <figcaption>Agent 2</figcaption>
                         </figure>
                     </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="block wrap" id="download">
+            <h2>Download</h2>
+            <p class="intro">Each scene is released as one zip archive. Download individual scenes below, or the whole <a href="https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QMdeMrWvv" target="_blank" rel="noopener">Google Drive folder</a>.</p>
+
+            <figure class="table-figure">
+                <div class="table-scroll">
+                    <table class="data">
+                        <thead>
+                            <tr>
+                                <th scope="col">Scene</th>
+                                <th scope="col">Agents</th>
+                                <th scope="col">Frames per agent</th>
+                                <th scope="col">Total frames</th>
+                                <th scope="col">Path length</th>
+                                <th scope="col">Co-visible voxels</th>
+                                <th scope="col">Mean pairwise overlap</th>
+                                <th scope="col">GT mesh</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="group-row"><td colspan="10">Four-agent benchmark scenes</td></tr>
+                            <tr><th scope="row">Apartment-0</th><td>4</td><td>1,696&ndash;2,238</td><td>7,792</td><td>101.6 m</td><td>80.5%</td><td>41.3%</td><td>&#x2713;</td><td>2.6 GB</td><td><a href="https://drive.google.com/file/d/1QE28hqLz--6QYis_Mga-8BreljMOPITG/view?usp=sharing" target="_blank" rel="noopener">Apart-0.zip</a></td></tr>
+                            <tr><th scope="row">Apartment-2</th><td>4</td><td>2,062&ndash;3,049</td><td>9,516</td><td>119.9 m</td><td>85.9%</td><td>34.9%</td><td>&#x2713;</td><td>3.1 GB</td><td><a href="https://drive.google.com/file/d/1d4FjtAXtJuTEPQrvEZVFxeAa9AJe-3g0/view?usp=sharing" target="_blank" rel="noopener">Apart-2.zip</a></td></tr>
+                            <tr><th scope="row">Hotel-0</th><td>4</td><td>782&ndash;1,173</td><td>4,122</td><td>49.8 m</td><td>72.8%</td><td>37.7%</td><td>&#x2713;</td><td>1.4 GB</td><td><a href="https://drive.google.com/file/d/1erqTCfXgxfROpqrGzEqRjtZVDmPS18jh/view?usp=sharing" target="_blank" rel="noopener">Hotel-0.zip</a></td></tr>
+                            <tr><th scope="row">Office-2</th><td>4</td><td>881&ndash;1,303</td><td>4,325</td><td>54.1 m</td><td>72.2%</td><td>59.8%</td><td>&#x2713;</td><td>1.4 GB</td><td><a href="https://drive.google.com/file/d/1jL7r1u0OeOe1X1Ep18Tcn9S0t7qZwFk4/view?usp=sharing" target="_blank" rel="noopener">Office-2.zip</a></td></tr>
+                            <tr class="group-row"><td colspan="10">Additional two-agent sequences</td></tr>
+                            <tr><th scope="row">Room-0</th><td>2</td><td>801&ndash;1,037</td><td>1,838</td><td>20.8 m</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>507 MB</td><td><a href="https://drive.google.com/file/d/1U3mAXhE_X4mWO3DWFFL-pjP9GrU-j1_c/view?usp=sharing" target="_blank" rel="noopener">Room-0-Part.zip</a></td></tr>
+                            <tr><th scope="row">Apartment-1</th><td>2</td><td>275&ndash;340</td><td>615</td><td>7.4 m</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>141 MB</td><td><a href="https://drive.google.com/file/d/1haMNO_-lhqdcN3MLSbCx6kx_twKy5yiZ/view?usp=sharing" target="_blank" rel="noopener">Aprat-1-Part.zip</a></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-    </section>
+                <figcaption>Overlap is computed from the ground-truth depth at 10&nbsp;cm voxel resolution. <em>Co-visible voxels</em> is the fraction of all observed voxels seen by at least two agents, and <em>mean pairwise overlap</em> is the voxel overlap averaged over all agent pairs. Office-2, Apartment-0 and Apartment-2 are used for the quantitative comparisons in the paper, and Hotel-0 is an additional four-agent scene. &ndash; marks values not provided for the two-agent sequences.</figcaption>
+            </figure>
 
-
-    <section class="section has-background-light">
-        <div class="container is-max-desktop">
-            <h2 class="title is-3 has-text-centered">Download</h2>
-            <p class="section-intro">
-                Each scene is released as one zip archive. Download individual scenes below, or the whole
-                <a href="https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QMdeMrWvv" target="_blank" rel="noopener noreferrer">Google Drive folder</a>.
-            </p>
-
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Scene</th>
-                            <th>Agents</th>
-                            <th>Frames per agent</th>
-                            <th>Total frames</th>
-                            <th>Path length</th>
-                            <th>Co-visible voxels</th>
-                            <th>Mean pairwise overlap</th>
-                            <th>GT mesh</th>
-                            <th>Size</th>
-                            <th>Download</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="group-row"><td colspan="10">Four-agent benchmark scenes</td></tr>
-                        <tr>
-                            <td>Apartment-0</td>
-                            <td>4</td>
-                            <td>1,696&ndash;2,238</td>
-                            <td>7,792</td>
-                            <td>101.6 m</td>
-                            <td>80.5%</td>
-                            <td>41.3%</td>
-                            <td><i class="fas fa-check" aria-label="yes"></i></td>
-                            <td>2.6 GB</td>
-                            <td><a href="https://drive.google.com/file/d/1QE28hqLz--6QYis_Mga-8BreljMOPITG/view?usp=sharing" target="_blank" rel="noopener noreferrer">Apart-0.zip</a></td>
-                        </tr>
-                        <tr>
-                            <td>Apartment-2</td>
-                            <td>4</td>
-                            <td>2,062&ndash;3,049</td>
-                            <td>9,516</td>
-                            <td>119.9 m</td>
-                            <td>85.9%</td>
-                            <td>34.9%</td>
-                            <td><i class="fas fa-check" aria-label="yes"></i></td>
-                            <td>3.1 GB</td>
-                            <td><a href="https://drive.google.com/file/d/1d4FjtAXtJuTEPQrvEZVFxeAa9AJe-3g0/view?usp=sharing" target="_blank" rel="noopener noreferrer">Apart-2.zip</a></td>
-                        </tr>
-                        <tr>
-                            <td>Hotel-0</td>
-                            <td>4</td>
-                            <td>782&ndash;1,173</td>
-                            <td>4,122</td>
-                            <td>49.8 m</td>
-                            <td>72.8%</td>
-                            <td>37.7%</td>
-                            <td><i class="fas fa-check" aria-label="yes"></i></td>
-                            <td>1.4 GB</td>
-                            <td><a href="https://drive.google.com/file/d/1erqTCfXgxfROpqrGzEqRjtZVDmPS18jh/view?usp=sharing" target="_blank" rel="noopener noreferrer">Hotel-0.zip</a></td>
-                        </tr>
-                        <tr>
-                            <td>Office-2</td>
-                            <td>4</td>
-                            <td>881&ndash;1,303</td>
-                            <td>4,325</td>
-                            <td>54.1 m</td>
-                            <td>72.2%</td>
-                            <td>59.8%</td>
-                            <td><i class="fas fa-check" aria-label="yes"></i></td>
-                            <td>1.4 GB</td>
-                            <td><a href="https://drive.google.com/file/d/1jL7r1u0OeOe1X1Ep18Tcn9S0t7qZwFk4/view?usp=sharing" target="_blank" rel="noopener noreferrer">Office-2.zip</a></td>
-                        </tr>
-                        <tr class="group-row"><td colspan="10">Additional two-agent sequences</td></tr>
-                        <tr>
-                            <td>Room-0</td>
-                            <td>2</td>
-                            <td>801&ndash;1,037</td>
-                            <td>1,838</td>
-                            <td>20.8 m</td>
-                            <td>&ndash;</td>
-                            <td>&ndash;</td>
-                            <td>&ndash;</td>
-                            <td>507 MB</td>
-                            <td><a href="https://drive.google.com/file/d/1U3mAXhE_X4mWO3DWFFL-pjP9GrU-j1_c/view?usp=sharing" target="_blank" rel="noopener noreferrer">Room-0-Part.zip</a></td>
-                        </tr>
-                        <tr>
-                            <td>Apartment-1</td>
-                            <td>2</td>
-                            <td>275&ndash;340</td>
-                            <td>615</td>
-                            <td>7.4 m</td>
-                            <td>&ndash;</td>
-                            <td>&ndash;</td>
-                            <td>&ndash;</td>
-                            <td>141 MB</td>
-                            <td><a href="https://drive.google.com/file/d/1haMNO_-lhqdcN3MLSbCx6kx_twKy5yiZ/view?usp=sharing" target="_blank" rel="noopener noreferrer">Aprat-1-Part.zip</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="table-note">
-                Overlap is computed from the ground-truth depth at 10&nbsp;cm voxel resolution. <i>Co-visible voxels</i>: fraction of all observed voxels seen by at least two agents. <i>Mean pairwise overlap</i>: voxel overlap averaged over all agent pairs.
-                Office-2, Apartment-0, and Apartment-2 are used for the quantitative comparisons in the paper; Hotel-0 is an additional four-agent scene.
-            </p>
-
-            <div class="content" style="margin-top: 1.5rem;">
-                <p>To download everything from the command line:</p>
-                <pre style="background: #fff;"><code>pip install gdown
+            <p class="intro intro-gap">To download everything from the command line:</p>
+            <div class="code">
+                <button type="button" class="copy" data-role="copy">Copy</button>
+<pre><code>pip install gdown
 gdown --folder https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QMdeMrWvv</code></pre>
             </div>
-        </div>
-    </section>
+        </section>
 
-
-    <section class="section">
-        <div class="container is-max-desktop">
-            <div class="columns is-centered">
-                <div class="column is-four-fifths">
-                    <h2 class="title is-3 has-text-centered">Data Format</h2>
-                    <div class="content">
-                        <p>Every archive contains one folder per agent (<code>part1</code> &hellip; <code>partN</code> = agent 1 &hellip; agent N). All agents of a scene are recorded in the same world frame.</p>
-                        <pre><code>Apart-0/
+        <section class="block wrap" id="format">
+            <h2>Data Format</h2>
+            <p class="intro">Every archive contains one folder per agent (<code>part1</code> &hellip; <code>partN</code> = agent 1 &hellip; agent N). All agents of a scene are recorded in the same world frame.</p>
+            <div class="code">
+<pre><code>Apart-0/
 ├── apart_0_part1/            # agent 1
 │   ├── rgb/                  # 000000.png, 000001.png, ...
 │   ├── depth/
@@ -633,48 +297,26 @@ gdown --folder https://drive.google.com/drive/folders/1FSf4tZvr7AZ8HfxcSDReWY2QM
 ├── apart_0_part3/            # agent 3
 ├── apart_0_part4/            # agent 4
 └── tsdf_mesh_w0.0.ply        # ground-truth mesh (four-agent scenes)</code></pre>
-                    </div>
+            </div>
 
-                    <div class="table-wrap">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>File</th>
-                                    <th>Content</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><code>rgb/NNNNNN.png</code></td>
-                                    <td class="wrap">8-bit RGB image, 640 &times; 480.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>depth/NNNNNN.png</code></td>
-                                    <td class="wrap">16-bit PNG, metric depth in millimetres (divide by 1000 for metres).</td>
-                                </tr>
-                                <tr>
-                                    <td><code>semantic/NNNNNN.png</code></td>
-                                    <td class="wrap">16-bit PNG, per-pixel Replica semantic class ID.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>groundtruth.txt</code></td>
-                                    <td class="wrap">Camera poses in TUM format, one line per frame: <code>timestamp tx ty tz qx qy qz qw</code> (camera-to-world, 30&nbsp;Hz). Line <i>i</i> corresponds to image <i>i</i>. Poses follow Habitat's OpenGL camera convention (x right, y up, z backward).</td>
-                                </tr>
-                                <tr>
-                                    <td><code>intrinsics.txt</code></td>
-                                    <td class="wrap"><code>fx fy cx cy width height</code> = <code>320 320 320 240 640 480</code> (pinhole, 90&deg; horizontal FoV, identical for all agents).</td>
-                                </tr>
-                                <tr>
-                                    <td><code>tsdf_mesh_w0.0.ply</code></td>
-                                    <td class="wrap">Dense ground-truth mesh of the scene (four-agent scenes).</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="table-scroll table-gap">
+                <table class="data files">
+                    <thead><tr><th scope="col">File</th><th scope="col">Content</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row"><code>rgb/NNNNNN.png</code></th><td>8-bit RGB image, 640 &times; 480.</td></tr>
+                        <tr><th scope="row"><code>depth/NNNNNN.png</code></th><td>16-bit PNG, metric depth in millimetres (divide by 1000 for metres).</td></tr>
+                        <tr><th scope="row"><code>semantic/NNNNNN.png</code></th><td>16-bit PNG, per-pixel Replica semantic class ID.</td></tr>
+                        <tr><th scope="row"><code>groundtruth.txt</code></th><td>Camera poses in TUM format, one line per frame: <code>timestamp tx ty tz qx qy qz qw</code> (camera-to-world, 30&nbsp;Hz). Line <em>i</em> corresponds to image <em>i</em>. Poses follow Habitat's OpenGL camera convention (x right, y up, z backward).</td></tr>
+                        <tr><th scope="row"><code>intrinsics.txt</code></th><td><code>fx fy cx cy width height</code> = <code>320 320 320 240 640 480</code> (pinhole, 90&deg; horizontal FoV, identical for all agents).</td></tr>
+                        <tr><th scope="row"><code>tsdf_mesh_w0.0.ply</code></th><td>Dense ground-truth mesh of the scene (four-agent scenes).</td></tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <div class="content" style="margin-top: 1.5rem;">
-                        <p>Loading one frame in Python:</p>
-                        <pre><code>import numpy as np
+            <p class="intro intro-gap">Loading one frame in Python:</p>
+            <div class="code">
+                <button type="button" class="copy" data-role="copy">Copy</button>
+<pre><code>import numpy as np
 from PIL import Image
 from scipy.spatial.transform import Rotation
 
@@ -691,47 +333,43 @@ c2w = np.eye(4)
 c2w[:3, :3] = Rotation.from_quat(poses[i, 4:8]).as_matrix()
 c2w[:3, 3] = poses[i, 1:4]
 c2w_opencv = c2w @ np.diag([1, -1, -1, 1])           # OpenGL -> OpenCV camera axes</code></pre>
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-
-    <section class="section has-background-light" id="BibTeX">
-        <div class="container is-max-desktop">
-            <div class="columns is-centered">
-                <div class="column is-four-fifths">
-                    <h2 class="title is-3 has-text-centered">Citation</h2>
-                    <div class="content">
-                        <p>If you find this dataset useful, please consider citing:</p>
-                        <pre style="background: #fff;"><code>@article{cao2026mags,
-  title={MAGS-SLAM: Monocular Multi-Agent Gaussian Splatting SLAM for Geometrically and Photometrically Consistent Reconstruction},
-  author={Cao, Zhihao and Shao, Qi and Zhai, Shuhao and Zhang, Jing and Nguyen, Anh and Wang, Hesheng and Huang, Baoru},
-  journal={IEEE Transactions on Automation Science and Engineering},
-  year={2026}
+        <section class="block wrap" id="citation">
+            <h2>Citation</h2>
+            <p class="intro">If you find this dataset useful, please consider citing:</p>
+            <div class="code">
+                <button type="button" class="copy" data-role="copy">Copy</button>
+<pre><code>@article{cao2026mags,
+  title   = {MAGS-SLAM: Monocular Multi-Agent Gaussian Splatting SLAM for
+             Geometrically and Photometrically Consistent Reconstruction},
+  author  = {Cao, Zhihao and Shao, Qi and Zhai, Shuhao and Zhang, Jing and
+             Nguyen, Anh and Wang, Hesheng and Huang, Baoru},
+  journal = {IEEE Transactions on Automation Science and Engineering},
+  year    = {2026},
+  doi     = {10.1109/TASE.2026.3746179}
 }</code></pre>
-                        <p>
-                            ReplicaMultiAgent Plus is rendered from the
-                            <a href="https://github.com/facebookresearch/Replica-Dataset" target="_blank" rel="noopener noreferrer">Replica dataset</a>
-                            with <a href="https://github.com/facebookresearch/habitat-sim" target="_blank" rel="noopener noreferrer">Habitat-Sim</a>.
-                            Use of the data is subject to the original Replica terms; please also cite Replica.
-                        </p>
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
+            <p class="intro intro-gap">ReplicaMultiAgent Plus is rendered from the <a href="https://github.com/facebookresearch/Replica-Dataset" target="_blank" rel="noopener">Replica dataset</a> with <a href="https://github.com/facebookresearch/habitat-sim" target="_blank" rel="noopener">Habitat-Sim</a>. Use of the data is subject to the original Replica terms, so please also cite Replica.</p>
+        </section>
+    </main>
 
-    <footer class="footer" style="background-color: transparent; padding-top: 2rem; padding-bottom: 2rem;">
-        <div align="center" class="container">
-            <div class="columns is-centered">
-                <div class="content">
-                    Thank you for your attention. Back to the <a href="../">MAGS-SLAM project page</a>.
-                </div>
-            </div>
-        </div>
+    <footer class="footer wrap">
+        <p>&copy; 2026 The MAGS-SLAM authors. Back to the <a href="../">MAGS-SLAM project page</a>.</p>
     </footer>
+
+    <script>
+        document.querySelectorAll('[data-role="copy"]').forEach(btn => btn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(btn.parentElement.querySelector('code').textContent);
+                btn.textContent = 'Copied';
+            } catch (e) {
+                btn.textContent = 'Press Ctrl+C';
+            }
+            setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+        }));
+    </script>
 </body>
 
 </html>
