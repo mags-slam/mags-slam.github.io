@@ -116,23 +116,30 @@ async function initSceneViewer(mod) {
         viewer.setTrajectories(on);
     });
 
-    // Trajectory replay: the play button animates the scrubber over 9 seconds.
+    // Replay: the trajectories and the map grow together over 10 seconds. The
+    // replay starts and loops by itself until the user pauses or scrubs.
     const scrub = card.querySelector('[data-role="scrub"]');
     const play = card.querySelector('[data-role="play"]');
-    let playing = null;
+    let playing = null, looping = true;
     const setPlaying = on => {
         playing = on ? { t0: performance.now(), from: scrub.value >= 1000 ? 0 : +scrub.value } : null;
         play.classList.toggle('is-on', on);
-        if (on && !trajBtn.classList.contains('is-on')) trajBtn.click();
     };
-    play.addEventListener('click', () => setPlaying(!playing));
-    scrub.addEventListener('input', () => { setPlaying(false); viewer.setReplay(scrub.value / 1000); });
+    play.addEventListener('click', () => {
+        looping = false;
+        if (!playing && !trajBtn.classList.contains('is-on')) trajBtn.click();
+        setPlaying(!playing);
+    });
+    scrub.addEventListener('input', () => { looping = false; setPlaying(false); viewer.setReplay(scrub.value / 1000); });
     viewer.onFrame = now => {
         if (!playing) return;
-        const v = Math.min(1000, playing.from + (now - playing.t0) / 9);
+        const v = Math.min(1000, playing.from + (now - playing.t0) / 10);
         scrub.value = v;
         viewer.setReplay(v / 1000);
-        if (v >= 1000) setPlaying(false);
+        // Hold the finished map for two seconds before the next loop.
+        if (v >= 1000 && (!looping || now - playing.t0 > 12000)) {
+            if (looping) { scrub.value = 0; setPlaying(true); } else setPlaying(false);
+        }
     };
 
     const cache = new Map();
@@ -151,6 +158,11 @@ async function initSceneViewer(mod) {
             viewer.show([layer]);
             viewer.setLegend(layer.tracks.map((t, i) => ({ color: t.color, label: `Agent ${i + 1}` })));
             viewer.frame(layer);
+            // Every newly selected scene replays its construction from the start.
+            looping = true;
+            scrub.value = 0;
+            viewer.setReplay(0);
+            setPlaying(true);
         } catch (err) {
             failViewer(card, err);
         }
@@ -210,7 +222,7 @@ function initViewers() {
     const scene = document.getElementById('scene-card');
     const coverage = document.getElementById('coverage-card');
     let modPromise = null;
-    const load = () => modPromise || (modPromise = import('./viewer.js?v=15'));
+    const load = () => modPromise || (modPromise = import('./viewer.js?v=16'));
     whenNear(scene, () => load().then(initSceneViewer).catch(err => failViewer(scene, err)));
     whenNear(coverage, () => load().then(initCoverageViewer).catch(err => failViewer(coverage, err)));
 }

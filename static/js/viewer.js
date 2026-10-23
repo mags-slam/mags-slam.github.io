@@ -150,6 +150,53 @@ function estimateUp(geom) {
     return up;
 }
 
+// Per-vertex build time for the replay. A vertex appears at the earliest
+// moment any agent comes within 1.05x of its closest approach (or a small
+// scene-relative radius), so the map grows behind the cameras as they move.
+// Times are fractions of each trajectory, matching setReplay.
+function computeRevealTimes(geom, trajectories, sceneSize) {
+    const cams = [];
+    for (const t of trajectories) {
+        const n = t.points.length, step = Math.max(1, Math.floor(n / 250));
+        for (let i = 0; i < n; i += step) cams.push([t.points[i][0], t.points[i][1], t.points[i][2], i / (n - 1)]);
+    }
+    const pos = geom.attributes.position.array, nv = pos.length / 3;
+    const out = new Float32Array(nv);
+    if (!cams.length) { geom.setAttribute('aReveal', new THREE.BufferAttribute(out, 1)); return; }
+    const r0 = (sceneSize * 0.03) ** 2;
+    const d2 = new Float32Array(cams.length);
+    for (let v = 0; v < nv; v++) {
+        const x = pos[v * 3], y = pos[v * 3 + 1], z = pos[v * 3 + 2];
+        let best = Infinity;
+        for (let c = 0; c < cams.length; c++) {
+            const p = cams[c];
+            const d = (p[0] - x) ** 2 + (p[1] - y) ** 2 + (p[2] - z) ** 2;
+            d2[c] = d;
+            if (d < best) best = d;
+        }
+        const lim = Math.max(best * 1.1025, r0);
+        let t = 1;
+        for (let c = 0; c < cams.length; c++) if (d2[c] <= lim && cams[c][3] < t) t = cams[c][3];
+        out[v] = t;
+    }
+    geom.setAttribute('aReveal', new THREE.BufferAttribute(out, 1));
+}
+
+// Hide fragments not yet built at the current replay time and brighten the
+// freshly built band, so the growing frontier is easy to follow.
+function addReveal(mat, uniform) {
+    mat.onBeforeCompile = shader => {
+        shader.uniforms.uReveal = uniform;
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nattribute float aReveal;\nvarying float vReveal;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvReveal = aReveal;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nuniform float uReveal;\nvarying float vReveal;')
+            .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nif (vReveal > uReveal) discard;')
+            .replace('#include <opaque_fragment>', '#include <opaque_fragment>\ngl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), 0.5 * smoothstep(0.04, 0.0, uReveal - vReveal) * step(uReveal, 1.0));');
+    };
+}
+
 function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2; }
 
 export class Viewer {
@@ -276,19 +323,23 @@ export class Viewer {
         orientTowardsCameras(geom, trajs);
         geom.computeVertexNormals();
         geom.computeBoundingBox();
+        const size = geom.boundingBox.getSize(new THREE.Vector3()).length();
+        computeRevealTimes(geom, trajs, size);
 
+        const reveal = { value: 2 };
         const colorMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.FrontSide });
         const clayMat = new THREE.MeshStandardMaterial({ color: CLAY, roughness: 0.92, metalness: 0, side: THREE.FrontSide });
+        addReveal(colorMat, reveal);
+        addReveal(clayMat, reveal);
         const ghostMat = new THREE.MeshBasicMaterial({ color: GHOST, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.FrontSide });
         const mesh = new THREE.Mesh(geom, colorMat);
 
         const group = new THREE.Group();
         group.add(mesh);
-        const size = geom.boundingBox.getSize(new THREE.Vector3()).length();
         const tracks = trajs.map((t, i) => this._makeTrack(t, AGENT_COLORS[(i + agentOffset) % AGENT_COLORS.length], size));
         for (const tr of tracks) group.add(tr.group);
 
-        const layer = { name, group, mesh, geom, colorMat, clayMat, ghostMat, tracks, ghost: false };
+        const layer = { name, group, mesh, geom, colorMat, clayMat, ghostMat, tracks, reveal, ghost: false };
         if (alignFrom) layer.up = estimateUp(geom);
         this.setProgress(1);
         return layer;
@@ -344,10 +395,12 @@ export class Viewer {
     setShading(mode) { this.shading = mode; this.applyStyle(); }
     setTrajectories(on) { this.showTrajectories = on; this.applyStyle(); }
 
-    // Reveal each trajectory up to fraction p of its length.
+    // Reveal each trajectory up to fraction p of its length, and the part of
+    // the map built by that time.
     setReplay(p) {
         this.progress = p;
         for (const l of this.active || []) {
+            if (l.reveal) l.reveal.value = p >= 1 ? 2 : p;
             for (const t of l.tracks) {
                 const n = t.points.length;
                 const k = Math.max(1, Math.round(p * (n - 1)));
