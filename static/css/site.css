@@ -432,19 +432,23 @@ td.second, .u { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Dataset page */
 
-.subtitle { margin: 12px auto 0; max-width: 720px; font: 500 20.5px/1.45 var(--serif); }
+.hero-dataset { padding-top: 96px; }
+.title-short { max-width: 960px; line-height: 1.24; }
+.title-short + .venue { margin-top: 32px; }
+.hero-dataset .links { margin-top: 30px; }
+.venue a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    margin: 36px 0 0;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 72px 0 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
 }
-.stats div { padding: 16px 8px; }
+.stats div { padding: 28px 12px; }
 .stats div + div { border-left: 1px solid var(--line); }
-.stats dt { font: 600 24px/1.2 var(--serif); color: var(--accent); }
-.stats dd { margin: 4px 0 0; font-size: 14px; }
+.stats dt { font: 600 32px/1.2 var(--serif); color: var(--accent); }
+.stats dd { margin: 8px 0 0; font-size: 15.5px; white-space: nowrap; }
 
 .features { margin: 0 0 16px; padding-left: 20px; }
 .features li { margin-bottom: 6px; }
@@ -500,9 +504,13 @@ code { font: 0.9em var(--mono); }
     .picker { gap: 14px; }
     .thumb, .thumb img { width: 96px; }
     .thumb img { height: 62px; }
-    .stats { grid-template-columns: repeat(3, 1fr); }
-    .stats div:nth-child(4) { border-left: 0; }
-    .stats div:nth-child(n+4) { border-top: 1px solid var(--line); }
+    .hero-dataset { padding-top: 56px; }
+    .stats { grid-template-columns: repeat(2, 1fr); margin-top: 48px; }
+    .stats div { padding: 20px 8px; }
+    .stats dt { font-size: 26px; }
+    .stats dd { font-size: 14px; white-space: normal; }
+    .stats div:nth-child(3) { border-left: 0; }
+    .stats div:nth-child(n+3) { border-top: 1px solid var(--line); }
     .scene { padding: 14px; }
     .scene-body { grid-template-columns: 1fr; }
     .scene-mesh { max-width: 240px; margin: 0 auto; }

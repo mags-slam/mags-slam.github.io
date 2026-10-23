@@ -210,7 +210,7 @@ function initViewers() {
     const scene = document.getElementById('scene-card');
     const coverage = document.getElementById('coverage-card');
     let modPromise = null;
-    const load = () => modPromise || (modPromise = import('./viewer.js?v=12'));
+    const load = () => modPromise || (modPromise = import('./viewer.js?v=15'));
     whenNear(scene, () => load().then(initSceneViewer).catch(err => failViewer(scene, err)));
     whenNear(coverage, () => load().then(initCoverageViewer).catch(err => failViewer(coverage, err)));
 }
