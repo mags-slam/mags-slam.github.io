@@ -222,7 +222,7 @@ function initViewers() {
     const scene = document.getElementById('scene-card');
     const coverage = document.getElementById('coverage-card');
     let modPromise = null;
-    const load = () => modPromise || (modPromise = import('./viewer.js?v=16'));
+    const load = () => modPromise || (modPromise = import('./viewer.js?v=18'));
     whenNear(scene, () => load().then(initSceneViewer).catch(err => failViewer(scene, err)));
     whenNear(coverage, () => load().then(initCoverageViewer).catch(err => failViewer(coverage, err)));
 }
@@ -254,6 +254,12 @@ function initNav() {
         let current = null;
         for (const s of sections) if (s.getBoundingClientRect().top <= y) current = s;
         links.forEach((a, i) => a.classList.toggle('is-on', sections[i] === current));
+        // On narrow screens the links scroll sideways; keep the active one in view.
+        const on = links.find(a => a.classList.contains('is-on'));
+        const bar = on && on.parentElement;
+        if (bar && bar.scrollWidth > bar.clientWidth) {
+            bar.scrollTo({ left: on.offsetLeft - (bar.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
+        }
     }, { threshold: [0, 0.25, 0.5, 1] });
     sections.forEach(s => io.observe(s));
 }
