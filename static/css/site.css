@@ -82,7 +82,7 @@ sup { font-size: 0.68em; line-height: 0; }
 .title {
     margin: 0 auto;
     max-width: none;
-    font: 500 clamp(25px, 3.2vw, 38.5px)/1.2 var(--serif);
+    font: 500 clamp(27px, 3.9vw, 46px)/1.18 var(--serif);
     letter-spacing: -0.02em;
     text-wrap: balance;
 }
@@ -98,7 +98,7 @@ sup { font-size: 0.68em; line-height: 0; }
 
 .authors {
     margin: 30px auto 0;
-    font-size: 19px;
+    font-size: 16.5px;
     line-height: 1.75;
 }
 .authors a { color: var(--ink); font-weight: 500; white-space: nowrap; }
@@ -113,10 +113,10 @@ sup { font-size: 0.68em; line-height: 0; }
     gap: 2px 16px;
     margin: 10px auto 0;
     max-width: 900px;
-    font-size: 15.2px;
+    font-size: 14px;
     line-height: 1.7;
 }
-.notes { margin-top: 4px; font-size: 14.5px; }
+.notes { margin-top: 4px; font-size: 13px; color: #5f6368; }
 
 .venue {
     margin: 16px 0 0;
@@ -591,14 +591,14 @@ code { font: 0.9em var(--mono); }
     .seg-center button { height: 34px; padding: 0 13px; font-size: 14.5px; }
     body { font-size: 15.5px; }
     .hero { padding-top: 40px; }
-    .authors { font-size: 17.5px; }
-    .affiliations { font-size: 15px; }
+    .authors { font-size: 15.5px; }
+    .affiliations { font-size: 13px; }
     .lead { font-size: 17px; }
     .block { padding-top: 56px; }
     h2 { font-size: 25px; }
     .viewer { aspect-ratio: 4 / 3; }
     .viewer-legend { left: 8px; bottom: 8px; font-size: 13px; }
-    .title { font-size: 25px; line-height: 1.25; }
+    .title { font-size: 28px; line-height: 1.22; }
     .authors { margin-top: 20px; line-height: 1.7; }
     .authors sup { margin-right: 8px; }
     .venue { font-size: 16px; }
