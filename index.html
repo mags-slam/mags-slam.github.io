@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./static/css/site.css?v=23">
+    <link rel="stylesheet" href="./static/css/site.css?v=28">
 
     <script type="importmap">
     {
@@ -41,6 +41,10 @@
                 <a href="#method">Method</a>
                 <a href="#explore">3D Viewer</a>
                 <a href="#results">Results</a>
+                <a href="#scaling">Four Agents</a>
+                <a href="#ablation">Ablation</a>
+                <a href="#efficiency">Efficiency</a>
+                <a href="#realworld">Real World</a>
                 <a href="#dataset">Dataset</a>
                 <a href="#citation">BibTeX</a>
             </nav>
@@ -175,6 +179,7 @@
 
         <section class="block num wrap" id="coverage">
             <h2>Why Multiple Agents</h2>
+            <div class="split split-viewer">
             <p class="intro">A single agent reconstructs only the part of the scene it has visited. On the real-world 7-Scenes <em>Fire</em> sequence, each agent covers a partial region of the room, shown over a faint outline of the complete scene, while collaborative fusion yields a complete and globally consistent reconstruction. The viewpoint stays fixed when switching, so coverage can be compared directly.</p>
 
             <div class="viewer-card" id="coverage-card">
@@ -201,6 +206,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </section>
 
         <section class="block num wrap" id="results">
@@ -213,10 +219,17 @@
                 <div class="picker"></div>
             </div>
 
-            <h3>Quantitative Comparison on ReplicaMultiAgent</h3>
-            <div class="seg seg-center" data-role="table-tabs">
-                <button type="button" data-value="tracking" class="is-on">Tracking</button>
-                <button type="button" data-value="rendering">Rendering</button>
+            <h3>Quantitative Comparison</h3>
+            <p class="intro">Using RGB input alone, MAGS-SLAM obtains the lowest average ATE among the RGB-only methods on all four ReplicaMultiAgent scenes (0.29&ndash;0.46&nbsp;cm), while the RGB-D MAGiC-SLAM remains lower at 0.16&ndash;0.32&nbsp;cm. On the real-world AriaMultiagent rooms its average ATE of 0.86 and 0.54&nbsp;cm is the lowest of all methods, including MAGiC-SLAM at 1.15 and 0.65&nbsp;cm. Rendering quality ranks first on most scenes: 43.24, 42.83 and 38.99&nbsp;dB PSNR on Office-0, Apartment-0 and Apartment-2, 29.03 and 31.02&nbsp;dB on the two Aria rooms, 3.6 and 2.9&nbsp;dB above the strongest RGB-D competitor, and first place on all five ETH3D scenes with gains of 3&ndash;7&nbsp;dB over MAC-Ego3D.</p>
+            <div class="seg seg-center table-tabs" data-role="table-tabs">
+                <div class="tab-group"><span class="tab-title">ReplicaMultiAgent</span>
+                    <button type="button" data-value="tracking" class="is-on">Tracking</button>
+                    <button type="button" data-value="rendering">Rendering</button></div>
+                <div class="tab-group"><span class="tab-title">AriaMultiagent</span>
+                    <button type="button" data-value="aria-tracking">Tracking</button>
+                    <button type="button" data-value="aria-rendering">Rendering</button></div>
+                <div class="tab-group"><span class="tab-title">ETH3D</span>
+                    <button type="button" data-value="eth3d">Rendering</button></div>
             </div>
 
             <figure class="table-figure" data-table="tracking">
@@ -260,6 +273,174 @@
                     </table>
                 </div>
                 <figcaption><span class="fig-no">Table 2.</span> Multi-agent rendering quality, PSNR and SSIM (higher is better) and LPIPS (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>.</figcaption>
+            </figure>
+
+            <figure class="table-figure" data-table="aria-tracking" hidden>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th rowspan="2" scope="col">Method</th><th rowspan="2" scope="col">Input</th><th colspan="4" scope="colgroup">Room-0</th><th colspan="4" scope="colgroup">Room-1</th></tr>
+                            <tr><th>Agent 1</th><th>Agent 2</th><th>Agent 3</th><th>Avg.</th><th>Agent 1</th><th>Agent 2</th><th>Agent 3</th><th>Avg.</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th scope="row">Swarm-SLAM</th><td>RGB-D</td><td>6.11</td><td>8.43</td><td>4.82</td><td>6.45</td><td>4.29</td><td>4.95</td><td>5.12</td><td>4.78</td></tr>
+                            <tr><th scope="row">CP-SLAM</th><td>RGB-D</td><td class="second">0.68</td><td>8.43</td><td>&ndash;</td><td>3.03</td><td>5.06</td><td>0.68</td><td>&ndash;</td><td>2.87</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>1.93</td><td>2.52</td><td>0.98</td><td>1.81</td><td>1.24</td><td>0.72</td><td>0.91</td><td>0.95</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td class="best">0.67</td><td class="second">1.13</td><td>1.67</td><td>1.15</td><td>0.96</td><td class="second">0.53</td><td class="second">0.46</td><td class="second">0.65</td></tr>
+                            <tr class="group-start"><th scope="row">CCM-SLAM</th><td>RGB</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2717;</td></tr>
+                            <tr><th scope="row">MultiSlam-DiffPose</th><td>RGB</td><td>1.07</td><td>1.30</td><td class="second">0.79</td><td class="second">1.05</td><td class="second">0.84</td><td>0.60</td><td>1.11</td><td>0.85</td></tr>
+                            <tr class="ours"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td>1.02</td><td class="best">1.04</td><td class="best">0.51</td><td class="best">0.86</td><td class="best">0.83</td><td class="best">0.52</td><td class="best">0.26</td><td class="best">0.54</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption><span class="fig-no">Table 3.</span> Tracking accuracy on the real-world AriaMultiagent dataset, ATE RMSE in cm (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>. &ndash; marks that CP-SLAM does not support more than two agents, and &#x2717; marks tracking failure.</figcaption>
+            </figure>
+
+            <figure class="table-figure" data-table="aria-rendering" hidden>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th rowspan="2" scope="col">Method</th><th rowspan="2" scope="col">Input</th><th colspan="3" scope="colgroup">Room-0</th><th colspan="3" scope="colgroup">Room-1</th></tr>
+                            <tr><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th scope="row">CP-SLAM</th><td>RGB-D</td><td>8.96</td><td>0.32</td><td>0.91</td><td>9.17</td><td>0.24</td><td>0.95</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>19.23</td><td>0.78</td><td>0.39</td><td>22.02</td><td>0.84</td><td>0.27</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td>23.45</td><td>0.89</td><td>0.22</td><td>21.78</td><td>0.85</td><td>0.21</td></tr>
+                            <tr><th scope="row">MAC-Ego3D</th><td>RGB-D</td><td>22.85</td><td>0.81</td><td>0.36</td><td class="second">28.17</td><td class="second">0.91</td><td class="second">0.20</td></tr>
+                            <tr><th scope="row">CoMA-SLAM</th><td>RGB-D</td><td class="second">25.41</td><td class="second">0.90</td><td class="second">0.21</td><td>21.80</td><td>0.85</td><td class="second">0.20</td></tr>
+                            <tr class="ours group-start"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td class="best">29.03</td><td class="best">0.92</td><td class="best">0.19</td><td class="best">31.02</td><td class="best">0.95</td><td class="best">0.11</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption><span class="fig-no">Table 4.</span> Rendering quality on the real-world AriaMultiagent dataset. Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>.</figcaption>
+            </figure>
+
+            <figure class="table-figure" data-table="eth3d" hidden>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th scope="col">Metric</th><th scope="col">Method</th><th scope="col">Input</th><th>Sofa</th><th>Table</th><th>Plant-Scene</th><th>Mannequin</th><th>Planar</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="metric" rowspan="5">PSNR&uarr;</td><th scope="row">CP-SLAM</th><td>RGB-D</td><td>25.28</td><td>15.44</td><td>20.10</td><td>18.76</td><td>16.74</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>22.30</td><td>19.48</td><td>22.72</td><td>24.35</td><td>15.18</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td>25.25</td><td>18.42</td><td>24.62</td><td>23.68</td><td class="second">17.35</td></tr>
+                            <tr><th scope="row">MAC-Ego3D</th><td>RGB-D</td><td class="second">27.09</td><td class="second">20.46</td><td class="second">26.02</td><td class="second">27.20</td><td>17.04</td></tr>
+                            <tr class="ours"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td class="best">30.67</td><td class="best">27.05</td><td class="best">31.32</td><td class="best">31.99</td><td class="best">22.68</td></tr>
+                            <tr class="group-start"><td class="metric" rowspan="5">SSIM&uarr;</td><th scope="row">CP-SLAM</th><td>RGB-D</td><td>0.819</td><td>0.522</td><td>0.654</td><td>0.598</td><td>0.431</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>0.747</td><td>0.672</td><td>0.746</td><td>0.757</td><td>0.318</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td>0.799</td><td>0.680</td><td>0.849</td><td>0.784</td><td>0.588</td></tr>
+                            <tr><th scope="row">MAC-Ego3D</th><td>RGB-D</td><td class="second">0.926</td><td class="second">0.851</td><td class="second">0.931</td><td class="second">0.929</td><td class="second">0.621</td></tr>
+                            <tr class="ours"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td class="best">0.953</td><td class="best">0.938</td><td class="best">0.961</td><td class="best">0.939</td><td class="best">0.864</td></tr>
+                            <tr class="group-start"><td class="metric" rowspan="5">LPIPS&darr;</td><th scope="row">CP-SLAM</th><td>RGB-D</td><td>0.330</td><td>0.621</td><td>0.499</td><td>0.605</td><td>0.706</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>0.424</td><td>0.493</td><td>0.399</td><td>0.486</td><td>0.846</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td>0.496</td><td>0.491</td><td>0.352</td><td>0.477</td><td class="second">0.542</td></tr>
+                            <tr><th scope="row">MAC-Ego3D</th><td>RGB-D</td><td class="second">0.178</td><td class="second">0.218</td><td class="second">0.139</td><td class="best">0.144</td><td>0.569</td></tr>
+                            <tr class="ours"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td class="best">0.138</td><td class="best">0.154</td><td class="best">0.108</td><td class="second">0.191</td><td class="best">0.222</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption><span class="fig-no">Table 5.</span> Rendering quality on the real-world multi-agent ETH3D dataset. Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>.</figcaption>
+            </figure>
+        </section>
+
+        <section class="block num wrap" id="scaling">
+            <h2>Scaling to Four Agents</h2>
+            <p class="intro">On ReplicaMultiAgent Plus, four independently scaled monocular submaps must be aligned without any depth cue. MAGS-SLAM still renders best on all three scenes, at 40.19, 40.86 and 41.07&nbsp;dB PSNR on Office-2, Apartment-0 and Apartment-2, against 32.17, 26.53 and 27.50&nbsp;dB for MAC-Ego3D. Its ATE is the lowest on Office-2 (0.354&nbsp;cm) and Apartment-0 (0.282&nbsp;cm), and third on Apartment-2 (0.404&nbsp;cm) behind MAC-Ego3D and MAGiC-SLAM. MultiSlam-DiffPose, the other RGB method, produces no renderable map.</p>
+            <figure class="table-figure">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th rowspan="2" scope="col">Method</th><th rowspan="2" scope="col">Input</th><th colspan="4" scope="colgroup">Office-2</th><th colspan="4" scope="colgroup">Apartment-0</th><th colspan="4" scope="colgroup">Apartment-2</th></tr>
+                            <tr><th>ATE&darr;</th><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th><th>ATE&darr;</th><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th><th>ATE&darr;</th><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th scope="row">CP-SLAM</th><td>RGB-D</td><td>2.591</td><td>20.44</td><td>0.763</td><td>0.391</td><td class="second">0.463</td><td class="second">29.19</td><td>0.918</td><td class="second">0.165</td><td>1.098</td><td>22.89</td><td>0.818</td><td>0.368</td></tr>
+                            <tr><th scope="row">MNE-SLAM</th><td>RGB-D</td><td>0.508</td><td>27.71</td><td>0.907</td><td>0.203</td><td>0.974</td><td>25.46</td><td>0.883</td><td>0.218</td><td>0.614</td><td>23.27</td><td>0.756</td><td>0.402</td></tr>
+                            <tr><th scope="row">MAGiC-SLAM</th><td>RGB-D</td><td class="second">0.395</td><td>31.37</td><td class="second">0.969</td><td>0.101</td><td>0.612</td><td>27.09</td><td>0.909</td><td>0.188</td><td class="second">0.365</td><td>21.04</td><td>0.762</td><td>0.366</td></tr>
+                            <tr><th scope="row">MAC-Ego3D</th><td>RGB-D</td><td>0.485</td><td class="second">32.17</td><td>0.955</td><td class="second">0.071</td><td>0.594</td><td>26.53</td><td class="second">0.929</td><td>0.198</td><td class="best">0.329</td><td class="second">27.50</td><td class="second">0.929</td><td class="second">0.198</td></tr>
+                            <tr class="group-start"><th scope="row">MultiSlam-DiffPose</th><td>RGB</td><td>0.892</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>0.905</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>1.023</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+                            <tr class="ours"><th scope="row">MAGS-SLAM (Ours)</th><td>RGB</td><td class="best">0.354</td><td class="best">40.19</td><td class="best">0.988</td><td class="best">0.028</td><td class="best">0.282</td><td class="best">40.86</td><td class="best">0.992</td><td class="best">0.013</td><td>0.404</td><td class="best">41.07</td><td class="best">0.990</td><td class="best">0.018</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption><span class="fig-no">Table 6.</span> Tracking (ATE RMSE in cm) and rendering quality with four agents on ReplicaMultiAgent Plus. Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>. &ndash; marks that MultiSlam-DiffPose has no rendering.</figcaption>
+            </figure>
+        </section>
+
+        <section class="block num wrap" id="ablation">
+            <h2>Ablation</h2>
+            <div class="split">
+                <figure class="table-figure">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th scope="col">Configuration</th><th>PSNR&uarr;</th><th>SSIM&uarr;</th><th>LPIPS&darr;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th scope="row">A1. w/o Sim(3)-PGBA update</th><td>36.32</td><td>0.963</td><td>0.057</td></tr>
+                            <tr><th scope="row">A2. w/o photometric residuals</th><td>37.88</td><td>0.967</td><td>0.045</td></tr>
+                            <tr><th scope="row">A3. w/o occupancy-aware fusion</th><td>33.16</td><td>0.941</td><td>0.113</td></tr>
+                            <tr><th scope="row">A4. w/o pose-Gaussian joint refinement</th><td class="second">38.94</td><td class="second">0.974</td><td class="second">0.041</td></tr>
+                            <tr><th scope="row">A5. w/o scale estimation, i.e., SE(3)</th><td>18.61</td><td>0.718</td><td>0.390</td></tr>
+                            <tr class="ours"><th scope="row">Full</th><td class="best">40.33</td><td class="best">0.981</td><td class="best">0.035</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                    <figcaption><span class="fig-no">Table 7.</span> Ablation on ReplicaMultiAgent, disabling one component at a time.</figcaption>
+                </figure>
+                <ul class="points">
+                    <li>Replacing the Sim(3) pose graph with a rigid SE(3) one collapses PSNR to 18.61&nbsp;dB, so explicit scale estimation is required when every agent is monocular.</li>
+                    <li>Naive Gaussian-centre deduplication instead of the occupancy-aware fusion costs 7.2&nbsp;dB, because slightly misaligned populations from different agents form double shells on shared surfaces.</li>
+                    <li>Without the Sim(3)-PGBA update, residual scale drift inside each submap remains and PSNR falls by 4.0&nbsp;dB.</li>
+                    <li>A purely geometric inter-agent residual drops PSNR to 37.88&nbsp;dB; the photometric term constrains overlaps that are textured but geometrically ambiguous, such as wall&ndash;floor seams.</li>
+                    <li>Skipping the joint pose&ndash;Gaussian refinement costs 1.4&nbsp;dB, the smallest drop, yet this step supplies the sub-voxel correction that sharp rendering needs.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="block num wrap" id="efficiency">
+            <h2>Efficiency and Scalability</h2>
+            <div class="split split-wide">
+                <figure>
+                    <a class="media zoomable" href="./static/images/efficiency.png" target="_blank" rel="noopener">
+                        <img src="./static/images/efficiency.png" width="1080" height="660" loading="lazy" alt="Per-agent throughput and GPU memory, coordinator latency and communication volume of MAGS-SLAM and RGB-D baselines">
+                    </a>
+                    <figcaption><span class="fig-no">Figure 3.</span> (a) Per-agent throughput, (b) peak GPU memory per agent, (c) coordinator latency per operation and (d) transmitted volume per agent.</figcaption>
+                </figure>
+                <ul class="points">
+                    <li>Each agent tracks at 13&ndash;16&nbsp;FPS, above the 10&nbsp;Hz real-time line on all three datasets, with peak GPU memory below 3.9&nbsp;GB, so several agents fit on one 16&nbsp;GB card.</li>
+                    <li>Retrieval, per-candidate verification and the full Sim(3) pose-graph optimization each finish within the 33&nbsp;ms budget of a 30&nbsp;Hz frame, so collaboration does not stall the front-ends.</li>
+                    <li>Sending compact submap summaries instead of the raw RGB stream cuts each agent&rsquo;s uplink by 45&ndash;520&times;.</li>
+                </ul>
+            </div>
+            <p class="intro intro-gap">From two to four agents, per-agent throughput and memory stay flat, and the coordinator cost does not grow: per-candidate verification even falls from 93.6 to 53.4&nbsp;ms, because a fixed-size scene is covered by shorter per-agent trajectories as more agents join.</p>
+            <figure class="table-figure">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th scope="col">Agents</th><th>Track FPS<br>per agent</th><th>Peak GPU memory<br>per agent (MB)</th><th>Verification<br>per candidate (ms)</th><th>Sim(3) PGO<br>(ms)</th><th>Coordination<br>uplink (MB)</th><th>Map-merge<br>payload (MB)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th scope="row">2</th><td>14.5</td><td>3833</td><td>93.6</td><td>0.001</td><td>9.27</td><td>409.8</td></tr>
+                            <tr><th scope="row">3</th><td>14.1</td><td>3486</td><td>63.0</td><td>0.001</td><td>8.12</td><td>378.7</td></tr>
+                            <tr><th scope="row">4</th><td>14.5</td><td>3377</td><td>53.4</td><td>0.001</td><td>7.31</td><td>265.8</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption><span class="fig-no">Table 8.</span> Agent-count scaling on ReplicaMultiAgent Plus. All quantities are per agent except the Sim(3) pose-graph optimization, which is a single coordinator solve.</figcaption>
+            </figure>
+        </section>
+
+        <section class="block num wrap" id="realworld">
+            <h2>Real-World Deployment</h2>
+            <p class="intro">Two people each walk the same outdoor residential street with an ordinary smartphone on a handheld monopod, recording monocular RGB video with no depth sensor, stereo rig or calibration between them. The scene has outdoor-scale depth, changing natural light, repetitive facades, parked cars and a passing pedestrian. From the two independently scaled streams, MAGS-SLAM recovers both trajectories and one globally consistent Gaussian map.</p>
+            <figure>
+                <a class="media zoomable" href="./static/images/realworld.jpg" target="_blank" rel="noopener">
+                    <img src="./static/images/realworld.jpg" width="2000" height="339" loading="lazy" alt="Smartphone on a monopod, fused Gaussian map of an outdoor street with two trajectories, and rendered colour and normal close-ups">
+                </a>
+                <figcaption><span class="fig-no">Figure 4.</span> (a) Capture setup. (b) Fused Gaussian map with the two agents&rsquo; trajectories in red and blue. (c) Rendered colour (left) and surface normals (right) at the two marked viewpoints.</figcaption>
             </figure>
         </section>
 
