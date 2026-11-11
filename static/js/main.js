@@ -247,6 +247,12 @@ function initCopy() {
 }
 
 function initNav() {
+    // The bar stays out of the way until the title block has scrolled off.
+    const bar = document.querySelector('.nav'), hero = document.querySelector('.hero');
+    if (bar && hero) {
+        bar.classList.add('nav-auto');
+        new IntersectionObserver(([e]) => bar.classList.toggle('show', !e.isIntersecting)).observe(hero);
+    }
     const links = [...document.querySelectorAll('.nav-links a')];
     const sections = links.map(a => document.querySelector(a.getAttribute('href')));
     const io = new IntersectionObserver(() => {

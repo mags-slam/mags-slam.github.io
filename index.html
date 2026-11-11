@@ -18,8 +18,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./static/css/site.css?v=19">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./static/css/site.css?v=23">
 
     <script type="importmap">
     {
@@ -29,7 +29,7 @@
         }
     }
     </script>
-    <script type="module" src="./static/js/main.js?v=19"></script>
+    <script type="module" src="./static/js/main.js?v=20"></script>
 </head>
 
 <body>
@@ -96,27 +96,35 @@
                 <div class="media">
                     <video src="./static/video/teaser.mp4" autoplay muted loop playsinline preload="auto" aria-label="MAGS-SLAM teaser video"></video>
                 </div>
-                <figcaption>From the RGB streams of several agents alone, MAGS-SLAM builds a single globally consistent photorealistic Gaussian map, without active depth sensors and without inter-agent extrinsic calibration.</figcaption>
+                <figcaption><span class="fig-no">Figure 1.</span> From the RGB streams of several agents alone, MAGS-SLAM builds a single globally consistent photorealistic Gaussian map, without active depth sensors and without inter-agent extrinsic calibration.</figcaption>
             </figure>
         </section>
 
-        <section class="block wrap" id="abstract">
+        <section class="block num wrap" id="abstract">
             <h2>Abstract</h2>
-            <div class="prose">
-                <p>Collaborative photorealistic 3D reconstruction from multiple agents enables rapid large-scale scene capture for virtual production and cooperative multi-robot exploration. While recent 3D Gaussian Splatting (3DGS) SLAM algorithms can generate high-fidelity real-time mapping, most of the existing multi-agent Gaussian SLAM methods still rely on RGB-D sensors to obtain metric depth and simplify cross-agent alignment, limiting their deployment on low-cost or power-constrained robotic platforms, especially given the wider availability of RGB cameras.</p>
-                <p>To address this challenge, we propose <strong>MAGS-SLAM</strong>, the first RGB-only multi-agent 3DGS SLAM framework for collaborative scene reconstruction. Each agent independently builds local monocular Gaussian submaps and transmits compact submap summaries rather than raw observations. To facilitate robust collaboration in the presence of monocular scale ambiguity, our framework integrates compact submap communication, geometry- and appearance-aware loop verification, and occupancy-aware Gaussian fusion, enabling coherent global reconstruction without active depth sensors.</p>
-                <p>We further introduce <a href="./dataset/"><strong>ReplicaMultiAgent Plus</strong></a>, a benchmark containing larger robot teams for evaluating collaborative Gaussian SLAM. Extensive experiments on both synthetic and real-world datasets demonstrate that MAGS-SLAM, using RGB images alone, achieves tracking accuracy, rendering quality, and geometric quality that are competitive with or superior to those of state-of-the-art RGB-D collaborative Gaussian SLAM methods.</p>
+            <div class="sheet">
+                <ul class="abs-points">
+                    <li><strong>Problem.</strong> Existing multi-agent Gaussian SLAM methods rely on RGB-D sensors for metric depth and cross-agent alignment, which limits their deployment on low-cost or power-constrained robots.</li>
+                    <li><strong>Method.</strong> Each agent builds local monocular Gaussian submaps and sends compact submap summaries. Geometry- and appearance-aware loop verification and occupancy-aware Gaussian fusion then merge them into one global map despite monocular scale ambiguity.</li>
+                    <li><strong>Benchmark.</strong> We introduce <a href="./dataset/">ReplicaMultiAgent Plus</a>, which contains larger robot teams for evaluating collaborative Gaussian SLAM.</li>
+                    <li><strong>Result.</strong> On synthetic and real-world datasets, MAGS-SLAM uses RGB images alone, yet its tracking, rendering and geometric quality are competitive with or superior to those of state-of-the-art RGB-D collaborative Gaussian SLAM methods.</li>
+                </ul>
+                <details class="abs"><summary>Full abstract</summary>
+                    <p>Collaborative photorealistic 3D reconstruction from multiple agents enables rapid large-scale scene capture for virtual production and cooperative multi-robot exploration. While recent 3D Gaussian Splatting (3DGS) SLAM algorithms can generate high-fidelity real-time mapping, most of the existing multi-agent Gaussian SLAM methods still rely on RGB-D sensors to obtain metric depth and simplify cross-agent alignment, limiting their deployment on low-cost or power-constrained robotic platforms, especially given the wider availability of RGB cameras.</p>
+                    <p>To address this challenge, we propose <strong>MAGS-SLAM</strong>, the first RGB-only multi-agent 3DGS SLAM framework for collaborative scene reconstruction. Each agent independently builds local monocular Gaussian submaps and transmits compact submap summaries rather than raw observations. To facilitate robust collaboration in the presence of monocular scale ambiguity, our framework integrates compact submap communication, geometry- and appearance-aware loop verification, and occupancy-aware Gaussian fusion, enabling coherent global reconstruction without active depth sensors.</p>
+                    <p>We further introduce <a href="./dataset/"><strong>ReplicaMultiAgent Plus</strong></a>, a benchmark containing larger robot teams for evaluating collaborative Gaussian SLAM. Extensive experiments on both synthetic and real-world datasets demonstrate that MAGS-SLAM, using RGB images alone, achieves tracking accuracy, rendering quality, and geometric quality that are competitive with or superior to those of state-of-the-art RGB-D collaborative Gaussian SLAM methods.</p>
+                </details>
             </div>
         </section>
 
-        <section class="block wrap" id="method">
+        <section class="block num wrap" id="method">
             <h2>Method</h2>
             <figure>
                 <a class="media zoomable" href="./static/images/pipeline.jpg" target="_blank" rel="noopener">
                     <img src="./static/images/pipeline.jpg" width="2400" height="981" loading="lazy" alt="MAGS-SLAM pipeline: local tracking and Gaussian mapping, global intra-to-inter loop closure, Gaussian fusion and global refinement">
                 </a>
                 <figcaption>
-                    <p><strong>Pipeline.</strong> Each agent receives only its own RGB stream, and the system runs in three stages.</p>
+                    <p><span class="fig-no">Figure 2.</span> <strong>Pipeline.</strong> Each agent receives only its own RGB stream, and the system runs in three stages.</p>
                     <ol class="stages">
                         <li><strong>Local tracking and Gaussian mapping.</strong> Dense bundle adjustment coupled with joint depth-scale adjustment estimates poses and scale-consistent inverse depth, which is back-projected into 3D Gaussians. Keyframes are grouped into bounded submaps, and intra-agent loops trigger online Sim(3) pose-graph bundle adjustment.</li>
                         <li><strong>Global intra-to-inter loop closure.</strong> Every frozen submap is sent as a compact summary: a 128-D descriptor, sparse 3D features, a downsampled registration cloud, a bounding volume and an anchor keyframe. Retrieval, hybrid sparse and LoFTR matching, a spatial-extent gate and ICP refinement yield verified inter-agent constraints, which a global Sim(3) submap pose graph optimizes with geometric and anchor-image photometric residuals.</li>
@@ -126,7 +134,7 @@
             </figure>
         </section>
 
-        <section class="block wrap" id="explore">
+        <section class="block num wrap" id="explore">
             <h2>Interactive Reconstructions</h2>
             <p class="intro">Globally fused meshes with the camera trajectory of every agent, on synthetic (ReplicaMultiAgent, ReplicaMultiAgent Plus) and real-world (ETH3D, Tanks and Temples) sequences. The replay shows the map growing as the agents explore the scene together; pause or drag the slider to inspect any moment, and switch between true colour and plain geometry.</p>
 
@@ -165,7 +173,7 @@
             <div class="picker" id="scene-picker"></div>
         </section>
 
-        <section class="block wrap" id="coverage">
+        <section class="block num wrap" id="coverage">
             <h2>Why Multiple Agents</h2>
             <p class="intro">A single agent reconstructs only the part of the scene it has visited. On the real-world 7-Scenes <em>Fire</em> sequence, each agent covers a partial region of the room, shown over a faint outline of the complete scene, while collaborative fusion yields a complete and globally consistent reconstruction. The viewpoint stays fixed when switching, so coverage can be compared directly.</p>
 
@@ -195,7 +203,7 @@
             </div>
         </section>
 
-        <section class="block wrap" id="results">
+        <section class="block num wrap" id="results">
             <h2>Results</h2>
 
             <h3>Collaborative Reconstruction</h3>
@@ -231,7 +239,7 @@
                         </tbody>
                     </table>
                 </div>
-                <figcaption>Multi-agent tracking accuracy, ATE RMSE in cm (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>. &ndash; marks sequences without reported results or available code, and &#x2717; marks tracking failure.</figcaption>
+                <figcaption><span class="fig-no">Table 1.</span> Multi-agent tracking accuracy, ATE RMSE in cm (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>. &ndash; marks sequences without reported results or available code, and &#x2717; marks tracking failure.</figcaption>
             </figure>
 
             <figure class="table-figure" data-table="rendering" hidden>
@@ -251,11 +259,11 @@
                         </tbody>
                     </table>
                 </div>
-                <figcaption>Multi-agent rendering quality, PSNR and SSIM (higher is better) and LPIPS (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>.</figcaption>
+                <figcaption><span class="fig-no">Table 2.</span> Multi-agent rendering quality, PSNR and SSIM (higher is better) and LPIPS (lower is better). Best results are in <strong>bold</strong> and second best are <span class="u">underlined</span>.</figcaption>
             </figure>
         </section>
 
-        <section class="block wrap" id="dataset">
+        <section class="block num wrap" id="dataset">
             <h2>ReplicaMultiAgent Plus</h2>
             <p class="intro">A multi-agent benchmark for collaborative Gaussian SLAM, with diverse indoor scenes captured by larger teams whose trajectories overlap. Besides monocular or RGB-D streams and ground-truth poses for each agent, it provides per-frame semantic labels and dense ground-truth meshes, to support research on multi-agent semantic SLAM, open-vocabulary 3D scene understanding and collaborative perception.</p>
             <div class="gallery" data-gallery="dataset">
@@ -269,7 +277,7 @@
         </section>
 
         <section class="block wrap" id="citation">
-            <h2>Citation</h2>
+            <h2>BibTeX</h2>
             <div class="bibtex">
                 <button type="button" class="copy" data-role="copy">Copy</button>
 <pre><code>@article{cao2026mags,
