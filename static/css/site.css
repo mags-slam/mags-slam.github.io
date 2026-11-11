@@ -126,7 +126,7 @@ sup { font-size: 0.68em; line-height: 0; }
 
 /* Buttons */
 
-.links { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 26px; }
+.links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; }
 .links-center { margin-top: 24px; }
 
 .btn {
@@ -134,10 +134,10 @@ sup { font-size: 0.68em; line-height: 0; }
     display: inline-flex;
     align-items: center;
     gap: 0.5em;
-    height: 42px;
-    padding: 0 15px;
-    border-radius: 10px;
-    font-size: 17.3px;
+    height: 36px;
+    padding: 0 13px;
+    border-radius: 9px;
+    font-size: 15px;
     font-weight: 500;
     white-space: nowrap;
     color: #fff;
@@ -147,9 +147,9 @@ sup { font-size: 0.68em; line-height: 0; }
 }
 .btn:hover { color: #fff; filter: brightness(0.9); transform: translateY(-2px); box-shadow: 0 12px 22px -10px var(--glow), 0 2px 4px rgba(0, 0, 0, 0.06); }
 .btn:active { transform: translateY(0) scale(0.97); }
-.btn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.btn svg { width: 15px; height: 15px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .btn svg.fill { fill: currentColor; stroke: none; }
-.btn-sm { height: 35px; padding: 0 16px; font-size: 15px; }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 14px; }
 .btn-ieee { --glow: rgba(0, 98, 155, 0.5); background: var(--ieee); }
 .btn-arxiv { --glow: rgba(179, 27, 27, 0.45); background: var(--arxiv); }
 .btn-github { --glow: rgba(46, 49, 54, 0.5); background: var(--github); }
@@ -268,7 +268,7 @@ details.abs p { margin: 12px 0 0; font-size: 15.2px; line-height: 1.75; color: #
 .seg button:disabled { opacity: 0.45; cursor: progress; }
 .seg button i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .seg-center { display: flex; justify-content: center; gap: 10px; margin: 0 auto 18px; }
-.seg-center button { height: 38px; padding: 0 18px; font-size: 16px; }
+.seg-center button { height: 33px; padding: 0 14px; font-size: 14.5px; }
 
 .icon-btn {
     display: inline-grid;
